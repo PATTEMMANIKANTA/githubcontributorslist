@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<body>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<h2>GitHub Contributors List for Repositories</h2>
+
+
+<div class="your-class">
+
+  <label for="Repository"><b>Repository:</b></label>
+  <input type="text" name="repository" id="repository" value="openshift">
+  <label for="Owner"><b>&nbsp;&nbsp;Owner</b></label>
+  <input type="text" name="lastname" id="owner" value="origin">
+  <label for="Count"><b>&nbsp;&nbsp;No.of Contributors:</b></label>
+  <input type="text" name="contribe" id="contri" value="5">  
+</div>
+  <br><br>
+  <button type="button" value="Submit"> Submit</button>
+
+ 
+	<table border="1">
+    <tr>
+    	<th>URL</th><th>Login</th><th>Type</th>
+       </tr>
+       <tbody  id="container">
+       </tbody>
+    </table>
+ 
+<script>
+$(document).ready(function(){
+
+  $("button").click(function(){
+    
+     var repository=$("#repository").val();
+      var owner=$("#owner").val();
+       var contri=$("#contri").val();
+       
+	  
+        var request = $.ajax({
+          url: "https://api.github.com/repos/"+repository+"/"+owner+"/contributors?per_page="+contri,
+          type: "GET", 
+          dataType: "JSON"
+        });
+	
+        request.done(function(msg) {
+        	console.log(msg);
+            $("#container").empty();
+              var len = contri;
+                var txt = "";
+				
+                if(len > 0){
+                    for(var i=0;i<len;i++){                     
+                            txt = "<tr><td><a href="+msg[i].html_url+"target=_blank >"+msg[i].html_url+"</a></td><td>"+msg[i].login+"</td><td><img src="+msg[i].avatar_url+" width=45/></td></tr>";
+                            $("#container").append(txt);
+                            
+                    }
+                }
+
+        });
+
+        request.fail(function(jqXHR, textStatus) {
+          alert( "Request failed: " + textStatus );
+        });
+  });
+
+});
+</script>
+</body>
+</html> 
